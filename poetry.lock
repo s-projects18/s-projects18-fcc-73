@@ -1,0 +1,16 @@
+[[package]]
+category = "main"
+description = "A package for repl.it that allows you to clear the console and play audio."
+name = "replit"
+optional = false
+python-versions = "*"
+version = "1.2.11"
+
+[metadata]
+content-hash = "68fd7916c3d91a445df0c50eaaa7bd11ecc96fca5d21b7448abce5dc4cad9d14"
+python-versions = "^3.8"
+
+[metadata.files]
+replit = [
+    {file = "replit-1.2.11-py3-none-any.whl", hash = "sha256:85509300137c57e9bc8a1e6cdd4b0a1c790e0a590852499b8aae22226658f238"},
+]
