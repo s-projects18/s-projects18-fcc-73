@@ -1,6 +1,3 @@
-import replit
-replit.clear()
-
 class Category:
   """objects based on different budget categories"""
   # static/ Class scope
@@ -28,6 +25,14 @@ class Category:
       balance += l['amount']
     return balance
 
+  def get_withdrawals(self):
+    """returns sum of all withdrawals"""
+    w = 0
+    for l in self.ledger:
+      if l['amount']<0:
+        w += -l['amount']
+    return w
+
   def transfer(self, amount, categoryObject):
     """add a withdrawal with the amount and the description 'Transfer to [Destination Budget Category]'"""
     if self.withdraw(amount, "Transfer to "+categoryObject.name):
@@ -50,19 +55,58 @@ class Category:
     title = self.name.center(30, '*') + br
     list = ''
     for l in self.ledger:
-      #t = l['description'].ljust(23, ' ')
+      # docs.python.org/2/library/string.html#format-examples
       list += '{:<23}'.format(l['description'])[:23]
       t = '{:.2f}'.format(l['amount'])
-      t = '{:>7}'.format(t)
+      # maybe: display '#######' if amount is too long
+      t = '{:>7}'.format(t)[:7]
       list += t + br 
     total = 'Total: ' + str(self.get_balance())
     return title + list + total
 
 def create_spend_chart(categories):
   """return a string that is a bar chart"""
-  pass
+  br = '\n'
+  title = 'Percentage spent by category' + br
 
-c = Category("foo42")
-c.deposit(888)
-c.withdraw(40)
-print(c)
+  data = {}   # sums per category
+  sum = 0     # sum over all categories
+  longest = 0 # longest category name
+  for category in categories:
+    if not category.name in data:
+      data[category.name] = 0
+    w = category.get_withdrawals()
+    data[category.name] += w
+    if len(category.name)>longest:
+      longest = len(category.name)
+    sum += w
+
+  perc = {} # percentage per category
+  tuples = data.items() # dictionary -> list of tuples
+  for k,v in tuples:
+    perc[k] = int(v/sum * 10) * 10 # 75,4 -> 70
+
+  list = ''
+  for lp in range(100,-10,-10):
+    list += "{:>3}".format(str(lp))+'| '
+    for k,v in perc.items():
+      if lp<=v:
+        list += 'o  '
+      else:
+        list += '   '
+    list += br
+  
+  sep = ('    {:->'+str(4+2*len(categories))+'}').format('') + br
+
+  legend = ''
+  for i in range(longest):
+    legend += '   '
+    for category in categories:
+      if i<len(category.name):
+        legend += '  '+category.name[i]
+      else:
+        legend += '   '
+    legend += '  ' + br
+
+  # remove br and add 2 extra spaces
+  return title + list + sep + legend.rstrip() + '  '
