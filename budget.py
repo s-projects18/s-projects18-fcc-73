@@ -46,12 +46,23 @@ class Category:
 
   def __str__(self): # like: toString()
     """returns formatted: title, list, total"""
-    return str(self.name) + ' # ' + str(self.ledger)
+    br = '\n'
+    title = self.name.center(30, '*') + br
+    list = ''
+    for l in self.ledger:
+      #t = l['description'].ljust(23, ' ')
+      list += '{:<23}'.format(l['description'])[:23]
+      t = '{:.2f}'.format(l['amount'])
+      t = '{:>7}'.format(t)
+      list += t + br 
+    total = 'Total: ' + str(self.get_balance())
+    return title + list + total
 
 def create_spend_chart(categories):
   """return a string that is a bar chart"""
   pass
 
 c = Category("foo42")
+c.deposit(888)
 c.withdraw(40)
 print(c)
